@@ -43,6 +43,8 @@ function test() {
         initX.push(0)
     }
     
+    jacobi(h, numberB, initX)
+    guess(h, numberB, initX)
     sor(h, numberB, initX, 1.46)
 }
 

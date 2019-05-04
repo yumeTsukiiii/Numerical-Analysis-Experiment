@@ -96,102 +96,102 @@ function buildNumberRectangle(row, column, buildFunc) {
     return r;
 }
 exports.buildNumberRectangle = buildNumberRectangle;
-function det(Matrix, N) {
-    var T0;
-    var T1;
-    var T2;
-    var Num;
-    var Cha;
-    var B = [];
-    for (var i = 0; i <= N; i++) {
+function det(matrix, n) {
+    var t0;
+    var t1;
+    var t2;
+    var num;
+    var cha;
+    var b = [];
+    for (var i = 0; i <= n; i++) {
         var subItem = [];
-        for (var j = 0; j <= N; j++) {
+        for (var j = 0; j <= n; j++) {
             subItem.push(0);
         }
-        B.push(subItem);
+        b.push(subItem);
     }
-    if (N > 0) {
-        Cha = 0;
-        Num = 0;
-        if (N == 1) {
-            return Matrix[0][0] * Matrix[1][1] - Matrix[0][1] * Matrix[1][0];
+    if (n > 0) {
+        cha = 0;
+        num = 0;
+        if (n == 1) {
+            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
         }
-        for (T0 = 0; T0 <= N; T0++) //T0循环
+        for (t0 = 0; t0 <= n; t0++) //T0循环
          {
-            for (T1 = 1; T1 <= N; T1++) //T1循环
+            for (t1 = 1; t1 <= n; t1++) //T1循环
              {
-                for (T2 = 0; T2 <= N - 1; T2++) //T2循环
+                for (t2 = 0; t2 <= n - 1; t2++) //T2循环
                  {
-                    if (T2 == T0) {
-                        Cha = 1;
+                    if (t2 == t0) {
+                        cha = 1;
                     }
-                    B[T1 - 1][T2] = Matrix[T1][T2 + Cha];
+                    b[t1 - 1][t2] = matrix[t1][t2 + cha];
                 }
                 //T2循环
-                Cha = 0;
+                cha = 0;
             }
             //T1循环
-            Num = Num + Matrix[0][T0] * det(B, N - 1) * Math.pow((-1), T0);
+            num = num + matrix[0][t0] * det(b, n - 1) * Math.pow((-1), t0);
         }
         //T0循环
-        return Num;
+        return num;
     }
-    else if (N == 0) {
-        return Matrix[0][0];
+    else if (n == 0) {
+        return matrix[0][0];
     }
     return 0;
 }
-function inverseMatrix(Matrix, N) {
-    var MatrixC = [];
-    for (var i = 0; i <= N; i++) {
+function inverseMatrix(matrix, n) {
+    var matrixC = [];
+    for (var i = 0; i <= n; i++) {
         var subItem = [];
-        for (var j = 0; j <= N; j++) {
+        for (var j = 0; j <= n; j++) {
             subItem.push(0);
         }
-        MatrixC.push(subItem);
+        matrixC.push(subItem);
     }
-    var T0;
-    var T1;
-    var T2;
-    var T3;
-    var B;
-    var Num = 0;
-    var Chay = 0;
-    var Chax = 0;
-    B = [];
-    for (var i = 0; i <= N; i++) {
+    var t0;
+    var t1;
+    var t2;
+    var t3;
+    var b;
+    var num = 0;
+    var chay = 0;
+    var chax = 0;
+    b = [];
+    for (var i = 0; i <= n; i++) {
         var subItem = [];
-        for (var j = 0; j <= N; j++) {
+        for (var j = 0; j <= n; j++) {
             subItem.push(0);
         }
-        B.push(subItem);
+        b.push(subItem);
     }
     var add;
-    add = 1 / det(Matrix, N);
-    for (T0 = 0; T0 <= N; T0++) {
-        for (T3 = 0; T3 <= N; T3++) {
-            for (T1 = 0; T1 <= N - 1; T1++) {
-                if (T1 < T0) {
-                    Chax = 0;
+    add = 1 / det(matrix, n);
+    for (t0 = 0; t0 <= n; t0++) {
+        for (t3 = 0; t3 <= n; t3++) {
+            for (t1 = 0; t1 <= n - 1; t1++) {
+                if (t1 < t0) {
+                    chax = 0;
                 }
                 else {
-                    Chax = 1;
+                    chax = 1;
                 }
-                for (T2 = 0; T2 <= N - 1; T2++) {
-                    if (T2 < T3) {
-                        Chay = 0;
+                for (t2 = 0; t2 <= n - 1; t2++) {
+                    if (t2 < t3) {
+                        chay = 0;
                     }
                     else {
-                        Chay = 1;
+                        chay = 1;
                     }
-                    B[T1][T2] = Matrix[T1 + Chax][T2 + Chay];
+                    b[t1][t2] = matrix[t1 + chax][t2 + chay];
                 }
                 //T2循环
             } //T1循环
-            det(B, N - 1);
-            MatrixC[T3][T0] = det(B, N - 1) * add * (Math.pow(-1, T0 + T3));
+            det(b, n - 1);
+            matrixC[t3][t0] = det(b, n - 1) * add * (Math.pow(-1, t0 + t3));
         }
     }
-    return MatrixC;
+    return matrixC;
 }
 exports.inverseMatrix = inverseMatrix;

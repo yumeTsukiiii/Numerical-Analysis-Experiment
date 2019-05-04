@@ -40,6 +40,8 @@ function test() {
         numberB.push(b.rectangleItems[i][0]);
         initX.push(0);
     }
+    jacobi(h, numberB, initX);
+    guess(h, numberB, initX);
     sor(h, numberB, initX, 1.46);
 }
 function init() {
