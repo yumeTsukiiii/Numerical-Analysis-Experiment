@@ -1,20 +1,45 @@
 import { NumberRectangle } from "./structure";
 import { D, L, U, inverse } from "./util";
 
-export interface EquationSet {
-    readonly results: number[][]
-    readonly A: NumberRectangle
-    readonly b: number[]
-    readonly init: number[]
-    next(): number[]
-}
-
-export class JacobiEquationSet implements EquationSet {
+export abstract class EquationSet {
 
     readonly results: number[][] = []
+    readonly reFixResults: number[][] = []
 
     constructor(readonly A: NumberRectangle, readonly b: number[], readonly init: number[]) {
         this.results.push(init)
+    }
+
+    abstract next(): number[]
+
+    reFix() {
+        let previous: number[]
+        if(this.reFixResults.length === 0) {
+            previous = this.results[this.results.length - 1]
+        } else {
+            previous = this.reFixResults[this.reFixResults.length - 1]
+        }
+        let bRectangle = new NumberRectangle(this.b.length, 1)
+        let previousRectangle = new NumberRectangle(this.b.length, 1)
+        for(let i = 0; i < this.b.length; i++) {
+            bRectangle.addItem(i, 0, this.b[i])
+            previousRectangle.addItem(i, 0, previous[i])
+        }
+        let r = bRectangle.sub(this.A.mutipColumnVector(previous))
+        let next = inverse(this.A).mutip(r).plus(previousRectangle)
+        let reFixResult: number[] = []
+        for(let i = 0; i < this.b.length; i++) {
+            reFixResult.push(next.rectangleItems[i][0])
+        }
+        this.reFixResults.push(reFixResult)
+        return reFixResult
+    }
+}
+
+export class JacobiEquationSet extends EquationSet {
+
+    constructor(readonly A: NumberRectangle, readonly b: number[], readonly init: number[]) {
+        super(A, b, init)
     }
 
     next(): number[] {
@@ -35,12 +60,10 @@ export class JacobiEquationSet implements EquationSet {
 
 }
 
-export class GuessEquationSet implements EquationSet {
-
-    readonly results: number[][] = []
+export class GuessEquationSet extends EquationSet {
 
     constructor(readonly A: NumberRectangle, readonly b: number[], readonly init: number[]) {
-        this.results.push(init)
+        super(A, b, init)
     }
 
     next(): number[] {
@@ -62,12 +85,10 @@ export class GuessEquationSet implements EquationSet {
 
 }
 
-export class SorEquationSet implements EquationSet {
-
-    readonly results: number[][] = []
+export class SorEquationSet extends EquationSet {
 
     constructor(readonly A: NumberRectangle, readonly b: number[], readonly init: number[], readonly omega: number) {
-        this.results.push(init)
+        super(A, b, init)
     }
 
     next(): number[] {
