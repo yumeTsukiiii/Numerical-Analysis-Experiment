@@ -169,4 +169,14 @@ export class NumberRectangle extends Rectangle<number> {
         }
         return rectangle
     }
+
+    multipNumber(n: number): NumberRectangle {
+        let rectangle = new NumberRectangle(this.row, this.column)
+        for(let i = 0; i < this.row; i++) {
+            for(let j = 0; j < this.column; j++) {
+                rectangle.addItem(i, j, this.rectangleItems[i][j] * n)
+            }
+        }
+        return rectangle
+    }
 }

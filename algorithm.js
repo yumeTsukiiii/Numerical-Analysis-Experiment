@@ -14,12 +14,15 @@ var JacobiEquationSet = /** @class */ (function () {
         var l = util_1.L(this.A);
         var u = util_1.U(this.A);
         var inverseD = util_1.inverse(d);
-        console.log(inverseD);
         var result = inverseD.mutip(l.plus(u))
             .mutipColumnVector(this.results[this.results.length - 1])
-            .plus(inverseD.mutipColumnVector(this.b)).rectangleItems[0];
-        this.results.push(result);
-        return result;
+            .plus(inverseD.mutipColumnVector(this.b));
+        var arrayResult = [];
+        for (var i = 0; i < this.b.length; i++) {
+            arrayResult.push(result.rectangleItems[i][0]);
+        }
+        this.results.push(arrayResult);
+        return arrayResult;
     };
     return JacobiEquationSet;
 }());
@@ -40,9 +43,13 @@ var GuessEquationSet = /** @class */ (function () {
         var inverseDL = util_1.inverse(d.sub(l));
         var result = inverseDL.mutip(u)
             .mutipColumnVector(this.results[this.results.length - 1])
-            .plus(inverseDL.mutipColumnVector(this.b)).rectangleItems[0];
-        this.results.push(result);
-        return result;
+            .plus(inverseDL.mutipColumnVector(this.b));
+        var arrayResult = [];
+        for (var i = 0; i < this.b.length; i++) {
+            arrayResult.push(result.rectangleItems[i][0]);
+        }
+        this.results.push(arrayResult);
+        return arrayResult;
     };
     return GuessEquationSet;
 }());
@@ -61,12 +68,16 @@ var SorEquationSet = /** @class */ (function () {
         var l = util_1.L(this.A);
         var u = util_1.U(this.A);
         var inverseD = util_1.inverse(d);
-        var inverseDOL = util_1.inverse(d.sub(l));
-        var result = inverseDOL.mutip(u)
+        var inverseDOL = util_1.inverse(d.sub(l.multipNumber(this.omega)));
+        var result = inverseDOL.mutip(d.multipNumber(1 - this.omega).plus(u.multipNumber(this.omega)))
             .mutipColumnVector(this.results[this.results.length - 1])
-            .plus(inverseDOL.mutipColumnVector(this.b)).rectangleItems[0];
-        this.results.push(result);
-        return result;
+            .plus(inverseDOL.multipNumber(this.omega).mutipColumnVector(this.b));
+        var arrayResult = [];
+        for (var i = 0; i < this.b.length; i++) {
+            arrayResult.push(result.rectangleItems[i][0]);
+        }
+        this.results.push(arrayResult);
+        return arrayResult;
     };
     return SorEquationSet;
 }());

@@ -182,6 +182,15 @@ var NumberRectangle = /** @class */ (function (_super) {
         }
         return rectangle;
     };
+    NumberRectangle.prototype.multipNumber = function (n) {
+        var rectangle = new NumberRectangle(this.row, this.column);
+        for (var i = 0; i < this.row; i++) {
+            for (var j = 0; j < this.column; j++) {
+                rectangle.addItem(i, j, this.rectangleItems[i][j] * n);
+            }
+        }
+        return rectangle;
+    };
     return NumberRectangle;
 }(Rectangle));
 exports.NumberRectangle = NumberRectangle;

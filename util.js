@@ -73,8 +73,7 @@ function U(r) {
 exports.U = U;
 function inverse(r) {
     var newR = new structure_1.NumberRectangle(r.row, r.column);
-    var inverseR = inverseMatrix(r.rectangleItems);
-    console.log(r);
+    var inverseR = inverseMatrix(r.rectangleItems, r.column - 1);
     for (var i = 0; i < r.row; i++) {
         for (var j = 0; j < r.column; j++) {
             newR.addItem(i, j, inverseR[i][j]);
@@ -97,63 +96,102 @@ function buildNumberRectangle(row, column, buildFunc) {
     return r;
 }
 exports.buildNumberRectangle = buildNumberRectangle;
-/**
- * 求逆矩阵
- * @param matrix 二维数组表示的逆矩阵
- */
-function inverseMatrix(matrix) {
-    var m = JSON.parse(JSON.stringify(matrix));
-    var len = m.length;
-    var i = 0;
-    var j = 0;
-    var k = 0;
-    var res = [];
-    if (len !== m[0].length)
-        throw new Error("matrix is not a square matrix");
-    for (j = 0; j < len; j++) {
-        res[j] = [];
-        for (i = 0; i < len; i++) {
-            if (j === i)
-                res[j][i] = 1;
-            else
-                res[j][i] = 0;
+function det(Matrix, N) {
+    var T0;
+    var T1;
+    var T2;
+    var Num;
+    var Cha;
+    var B = [];
+    for (var i = 0; i <= N; i++) {
+        var subItem = [];
+        for (var j = 0; j <= N; j++) {
+            subItem.push(0);
         }
+        B.push(subItem);
     }
-    for (i = 0; i < len; i++) {
-        for (j = 0; j < len; j++) {
-            if (m[j][i] !== 0) {
-                if (j !== 0)
-                    swap(m, res, 0, j);
-                break;
-            }
+    if (N > 0) {
+        Cha = 0;
+        Num = 0;
+        if (N == 1) {
+            return Matrix[0][0] * Matrix[1][1] - Matrix[0][1] * Matrix[1][0];
         }
-        for (j = 0; j < len; j++) {
-            if (j === 0) {
-                for (k = len - 1; k >= 0; k--) {
-                    res[j][k] = res[j][k] / m[j][i];
+        for (T0 = 0; T0 <= N; T0++) //T0循环
+         {
+            for (T1 = 1; T1 <= N; T1++) //T1循环
+             {
+                for (T2 = 0; T2 <= N - 1; T2++) //T2循环
+                 {
+                    if (T2 == T0) {
+                        Cha = 1;
+                    }
+                    B[T1 - 1][T2] = Matrix[T1][T2 + Cha];
                 }
-                for (k = len - 1; k >= i; k--)
-                    m[j][k] /= m[j][i];
+                //T2循环
+                Cha = 0;
             }
-            else {
-                for (k = len - 1; k >= 0; k--)
-                    res[j][k] = res[j][k] - m[j][i] / m[0][i] * res[0][k];
-                for (k = len - 1; k >= i; k--)
-                    m[j][k] = m[j][k] - m[j][i] / m[0][i] * m[0][k];
-            }
+            //T1循环
+            Num = Num + Matrix[0][T0] * det(B, N - 1) * Math.pow((-1), T0);
         }
-        swap(m, res, 0, (i + 1) % len);
+        //T0循环
+        return Num;
     }
-    swap(m, res, 0, len - 1);
-    function swap(input, output, target, source) {
-        if (target === source)
-            return void 0;
-        var a = input[target], b = output[target];
-        input[target] = input[source];
-        input[source] = a;
-        output[target] = output[source];
-        output[source] = b;
+    else if (N == 0) {
+        return Matrix[0][0];
     }
-    return res;
+    return 0;
+}
+function inverseMatrix(Matrix, N) {
+    var MatrixC = [];
+    for (var i = 0; i <= N; i++) {
+        var subItem = [];
+        for (var j = 0; j <= N; j++) {
+            subItem.push(0);
+        }
+        MatrixC.push(subItem);
+    }
+    var T0;
+    var T1;
+    var T2;
+    var T3;
+    var B;
+    var Num = 0;
+    var Chay = 0;
+    var Chax = 0;
+    B = [];
+    for (var i = 0; i <= N; i++) {
+        var subItem = [];
+        for (var j = 0; j <= N; j++) {
+            subItem.push(0);
+        }
+        B.push(subItem);
+    }
+    var add;
+    add = 1 / det(Matrix, N);
+    for (T0 = 0; T0 <= N; T0++) {
+        for (T3 = 0; T3 <= N; T3++) {
+            for (T1 = 0; T1 <= N - 1; T1++) {
+                if (T1 < T0) {
+                    Chax = 0;
+                }
+                else {
+                    Chax = 1;
+                }
+                for (T2 = 0; T2 <= N - 1; T2++) {
+                    if (T2 < T3) {
+                        Chay = 0;
+                    }
+                    else {
+                        Chay = 1;
+                    }
+                    B[T1][T2] = Matrix[T1 + Chax][T2 + Chay];
+                }
+                //T2循环
+            } //T1循环
+            det(B, N - 1);
+            MatrixC[T3][T0] = det(B, N - 1) * add * (Math.pow(-1, T0 + T3));
+        }
+    }
+    return MatrixC;
 }
 exports.inverseMatrix = inverseMatrix;
